@@ -1,7 +1,6 @@
 import tkinter as tk
 import tkinter.font as tkfont
 
-from time import sleep
 from datetime import datetime
 
 class Stopwatch:
