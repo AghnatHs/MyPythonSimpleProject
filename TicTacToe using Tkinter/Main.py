@@ -1,12 +1,17 @@
 import tkinter as tk
 import tkinter.messagebox as messagebox
 
-from colorlib import Gray
+from colorlib import Gray,Red
 from tkinter.font import Font 
 
 """
     >Tic Tac Toe created with python tkinter library
-    >Version 1.0.0
+    >Version 1.0.1
+    >Version 1.0.1 GameChangeLog > added restart question message after somebody is win
+                                 > added restart button in the bottom
+    >Version 1.0.1 CodeChangeLog > change class(TicTacToe) variable name helv36  to helv29 
+                                 > added new font in class(TicTacToe) named helv12
+                                 > !NEED new "colorlib.py" module which contains red color (code in repo also) 
     >Created by Aghnat HS
     >Sorry if the code is a big mess and hard to understand.
 """
@@ -24,7 +29,7 @@ BOARD_DATA=[
             ["-","-","-"],
             ["-","-","-"]
            ]
-BOARD_DATA_DEFAULT=BOARD_DATA
+
 
 
 class Board(tk.Button):
@@ -58,8 +63,8 @@ class Board(tk.Button):
         #function to set board state 
         if state == self.DEFAULT_S:
             #change button appereance
-            self.config(relief=tk.RIDGE,width=3,height=1,bg=Gray.slategray)
-            #set the text to " "
+            self.config(relief=tk.RIDGE,width=3,height=1,bg=Gray.slategray,state=tk.NORMAL)
+            #set the text to empty
             self.config(text=" ",font=self._font)
             #set command to this button
             self.config(command=lambda:self.set_state(self.CLICKED_S))
@@ -75,9 +80,15 @@ class Board(tk.Button):
                 if check_win[0]:
                     TicTacToe.set_win()
                     if check_win[1]==X_WIN:
-                        messagebox.showinfo("GAME_ENDED","X WIN THE GAME")
+                        #ask if user want to restart a game
+                        askRestart=messagebox.askyesno("X WIN THE GAME","RESTART GAME?")
                     elif check_win[1]==O_WIN:
-                        messagebox.showinfo("GAME_ENDED","O WIN THE GAME")
+                        #ask if user want to restart a game
+                        askRestart=messagebox.askyesno("O WIN THE GAME","RESTART GAME?")
+                    #restart the game if user select yes
+                    if askRestart!=None and askRestart!=False: 
+                        TicTacToe.reset_game()
+                        return 0
             #change button appereance AND set to disable state
             self.config(bg=Gray.gray,disabledforeground="#000000",state=tk.DISABLED)
             #set PLAYER_NOW to x or o
@@ -103,34 +114,40 @@ class TicTacToe():
         self.master.geometry("{}x{}".format(width,height)) 
         self.master.title("Tic Tac Toe")
         #set font
-        self.helv36 = Font(root=self.master,family="Helvetica",size=29,weight="bold")
+        self.helv29 = Font(root=self.master,family="Helvetica",size=29,weight="bold")
+        self.helv12 = Font(root=self.master,family="Helvetica",size=12,weight="bold")
+        #create restart button
+        self.restartButton = tk.Button(self.master,text="Restart",command=lambda:TicTacToe.reset_game(),bg=Red.crimson,font=self.helv12,relief=tk.RIDGE)
+        self.restartButton.pack()
+        self.restartButton.place(x=width/2-35,y=300)
         #create clickable Tic tac toe board
         self.create_board()
         #loop the main window
         self.master.mainloop()
+
     #function to create a board object
     def create_board(self):
         #////init board /////
         x_start=20
         #first row
         f_row_y = 15
-        self.board11 = Board([0,0],xx=x_start,yy=f_row_y,_font=self.helv36)
-        self.board12 = Board([0,1],xx=self.board11._x + 90,yy=f_row_y,_font=self.helv36)
-        self.board13 = Board([0,2],xx=self.board12._x + 90,yy=f_row_y,_font=self.helv36)
+        self.board11 = Board([0,0],xx=x_start,yy=f_row_y,_font=self.helv29)
+        self.board12 = Board([0,1],xx=self.board11._x + 90,yy=f_row_y,_font=self.helv29)
+        self.board13 = Board([0,2],xx=self.board12._x + 90,yy=f_row_y,_font=self.helv29)
         #append to board object list
         TicTacToe.board_object.extend([self.board11,self.board12,self.board13])
         #second row
         s_row_y = f_row_y + 100
-        self.board21 = Board([1,0],xx=x_start,yy=s_row_y,_font=self.helv36)
-        self.board22 = Board([1,1],xx=self.board21._x + 90,yy=s_row_y,_font=self.helv36)
-        self.board23 = Board([1,2],xx=self.board22._x + 90,yy=s_row_y,_font=self.helv36)
+        self.board21 = Board([1,0],xx=x_start,yy=s_row_y,_font=self.helv29)
+        self.board22 = Board([1,1],xx=self.board21._x + 90,yy=s_row_y,_font=self.helv29)
+        self.board23 = Board([1,2],xx=self.board22._x + 90,yy=s_row_y,_font=self.helv29)
         #append to board object list
         TicTacToe.board_object.extend([self.board21,self.board22,self.board23])
         #third row
         t_row_y = s_row_y + 100
-        self.board31=Board([2,0],xx=x_start,yy=t_row_y,_font=self.helv36)
-        self.board32=Board([2,1],xx=self.board31._x + 90,yy=t_row_y,_font=self.helv36)
-        self.board33=Board([2,2],xx=self.board32._x + 90,yy=t_row_y,_font=self.helv36)
+        self.board31=Board([2,0],xx=x_start,yy=t_row_y,_font=self.helv29)
+        self.board32=Board([2,1],xx=self.board31._x + 90,yy=t_row_y,_font=self.helv29)
+        self.board33=Board([2,2],xx=self.board32._x + 90,yy=t_row_y,_font=self.helv29)
         #append to board object list
         TicTacToe.board_object.extend([self.board31,self.board32,self.board33])
     #function to set all board object to disabled-win-state
@@ -139,11 +156,16 @@ class TicTacToe():
         #set all board object to disabled state if someone is winning
         for obj in cls.board_object:
             obj.set_state(obj.ISWIN_S)
-    #function to reset game (un-finished)
+    #function to reset game
     @classmethod
     def reset_game(cls):
+        global BOARD_DATA
         #set board data to default
-        BOARD_DATA=BOARD_DATA_DEFAULT
+        BOARD_DATA=[
+                    ["-","-","-"],
+                    ["-","-","-"],
+                    ["-","-","-"]
+                   ]
         #set all board object to default
         for obj in cls.board_object:
             obj.set_state(obj.DEFAULT_S)
@@ -189,4 +211,4 @@ class TicTacToe():
             return True,O_WIN
         
 
-main=TicTacToe(300,320)
+main=TicTacToe(300,340)
