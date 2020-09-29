@@ -3,7 +3,8 @@ from tkinter.font import Font
 from tkinter.filedialog import askopenfilename
 
 from pygame import mixer as Playback
-from mutagen.mp3 import MP3 
+from mutagen.wave import WAVE
+from mutagen.mp3 import MP3
 
 from math import floor
 
@@ -14,15 +15,18 @@ from colorlib import Gray
 """
     Quick and Simple Music Player using Python
     Created by Aghnat Hasya S
-    >only support mp3
+    >only support mp3 
+    >update support wave 
 """
 
 class Music():
     #base class for song 
     def __init__(self,fileLocation):
         self.musicLocation = fileLocation
-        self.musicLength = floor(MP3(self.musicLocation).info.length)
-        #self.musicTitle = (self.musicLocation.split("/")[len(self.musicLocation.split("/"))-1]).split(".")[0]
+        try:
+            self.musicLength = floor(MP3(self.musicLocation).info.length)
+        except:
+            self.musicLength = floor(WAVE(self.musicLocation).info.length)
         self.musicTitle = Path(self.musicLocation).name
 
 class HoverButton(tk.Button):
@@ -98,7 +102,7 @@ class App():
             self.playButton["text"] = "RESUME"
         #search for music file
         music_path = str(Path.home() / "Music")
-        file = askopenfilename(title="Select a Music",filetypes=[("Music File","*.mp3")],initialdir=music_path)
+        file = askopenfilename(title="Select a Music",filetypes=[("Music File",("*.mp3","*.wav"))],initialdir=music_path)
         #create music object
         self.music = Music(file)
         #set if music object is created
@@ -138,6 +142,6 @@ class App():
         self.aboutLabel = tk.Label(self.about,text="""Quick and Simple Music Player 
                                                       \n Created by Aghnat HS 
                                                       \n Using Python Libraries
-                                                      \n ONLY SUPPORT MP3 FILE TYPE""")
+                                                       \n Support .mp3 and .wav""")
         self.aboutLabel.pack()                
 _Main = App(640,480)
