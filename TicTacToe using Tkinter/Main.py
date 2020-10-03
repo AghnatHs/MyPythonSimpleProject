@@ -47,6 +47,9 @@ class Board(tk.Button):
         #position varibale
         self._x = xx
         self._y = yy
+        #set bind
+        self.bind("<Enter>",self.on_enter)
+        self.bind("<Leave>",self.on_leave)
         #font variable
         self._font=_font
         #board data variable
@@ -57,6 +60,13 @@ class Board(tk.Button):
         self.pack()
         self.place(x=xx,y=yy)
     
+    #bind function
+    def on_enter(self,e):
+        if self["state"] == tk.NORMAL: self.config(text=PLAYER_NOW)
+    def on_leave(self,e):
+        if self["state"] == tk.NORMAL: self.config(text="")
+
+
     def set_state(self,state):
         global PLAYER_NOW
         global BOARD_DATA
