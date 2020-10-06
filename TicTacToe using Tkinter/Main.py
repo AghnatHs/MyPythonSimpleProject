@@ -170,6 +170,9 @@ class TicTacToe():
     @classmethod
     def reset_game(cls):
         global BOARD_DATA
+        global PLAYER_NOW
+        #set player to x 
+        PLAYER_NOW=PLAYER_X
         #set board data to default
         BOARD_DATA=[
                     ["-","-","-"],
@@ -184,18 +187,12 @@ class TicTacToe():
     def check_win(cls):
         #CHECK THE X
         if (
-            BOARD_DATA[0]==["X","X","X"] or #horizontal row 1
-            BOARD_DATA[1]==["X","X","X"] or #horizontal row 2
-            BOARD_DATA[2]==["X","X","X"]    #horizontal row 3
-           ):
-            return True,X_WIN
-        if (
+            (BOARD_DATA[0]==["X","X","X"]) or #horizontal row 1
+            (BOARD_DATA[1]==["X","X","X"]) or #horizontal row 2
+            (BOARD_DATA[2]==["X","X","X"]) or   #horizontal row 3
             (BOARD_DATA[0][0] + BOARD_DATA[1][0] + BOARD_DATA[2][0]) == "XXX" or  #vertical column 1
             (BOARD_DATA[0][1] + BOARD_DATA[1][1] + BOARD_DATA[2][1]) == "XXX" or  #vertical column 2
-            (BOARD_DATA[0][2] + BOARD_DATA[1][2] + BOARD_DATA[2][2]) == "XXX"     #vertical column 3
-           ):
-            return True,X_WIN
-        if (
+            (BOARD_DATA[0][2] + BOARD_DATA[1][2] + BOARD_DATA[2][2]) == "XXX" or    #vertical column 3
             (BOARD_DATA[0][0] + BOARD_DATA[1][1] + BOARD_DATA[2][2]) == "XXX" or  #cross right \
             (BOARD_DATA[0][2] + BOARD_DATA[1][1] + BOARD_DATA[2][0]) == "XXX"   #cross left /
            ):
@@ -203,18 +200,12 @@ class TicTacToe():
         
         #CHECK THE O
         if (
-            BOARD_DATA[0]==["O","O","O"] or #horizontal row 1
-            BOARD_DATA[1]==["O","O","O"] or #horizontal row 2
-            BOARD_DATA[2]==["O","O","O"]    #horizontal row 3
-           ): 
-            return True,O_WIN
-        if (
+            (BOARD_DATA[0]==["O","O","O"]) or #horizontal row 1
+            (BOARD_DATA[1]==["O","O","O"]) or #horizontal row 2
+            (BOARD_DATA[2]==["O","O","O"]) or   #horizontal row 3
             (BOARD_DATA[0][0] + BOARD_DATA[1][0] + BOARD_DATA[2][0]) == "OOO" or  #vertical column 1
             (BOARD_DATA[0][1] + BOARD_DATA[1][1] + BOARD_DATA[2][1]) == "OOO" or  #vertical column 2
-            (BOARD_DATA[0][2] + BOARD_DATA[1][2] + BOARD_DATA[2][2]) == "OOO"     #vertical column 3
-           ):
-            return True,O_WIN
-        if (
+            (BOARD_DATA[0][2] + BOARD_DATA[1][2] + BOARD_DATA[2][2]) == "OOO" or    #vertical column 3
             (BOARD_DATA[0][0] + BOARD_DATA[1][1] + BOARD_DATA[2][2]) == "OOO" or  #cross right \
             (BOARD_DATA[0][2] + BOARD_DATA[1][1] + BOARD_DATA[2][0]) == "OOO"   #cross left /
            ):
