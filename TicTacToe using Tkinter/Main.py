@@ -9,6 +9,7 @@ from tkinter.font import Font
     >Version 1.0.1
     >Version 1.0.1 GameChangeLog > added restart question message after somebody is win
                                  > added restart button in the bottom
+    >Version 1.0.2 GameChangeLog > throw restart question if there are not any possible move
     >Version 1.0.1 CodeChangeLog > change class(TicTacToe) variable name helv36  to helv29 
                                  > added new font in class(TicTacToe) named helv12
                                  > !NEED new "colorlib.py" module which contains red color (code in repo also) 
@@ -23,12 +24,13 @@ PLAYER_NOW=PLAYER_X
 X_WIN="X_WIN"
 O_WIN="O_WIN"
 
-#board data TO CHECK WIN
+#board data
 BOARD_DATA=[
             ["-","-","-"],
             ["-","-","-"],
             ["-","-","-"]
            ]
+FILLED_BOARDS=0
 
 
 
@@ -54,6 +56,7 @@ class Board(tk.Button):
         self._font=_font
         #board data variable
         self.b_data=data
+        self.Filled=False
         #set default state for this button 
         self.set_state(self.DEFAULT_S)
         #place the button
@@ -72,6 +75,8 @@ class Board(tk.Button):
         global BOARD_DATA
         #function to set board state 
         if state == self.DEFAULT_S:
+            #set default filled var
+            self.Filled=False
             #change button appereance
             self.config(relief=tk.RIDGE,width=3,height=1,bg=Gray.slategray,state=tk.NORMAL)
             #set the text to empty
@@ -79,6 +84,8 @@ class Board(tk.Button):
             #set command to this button
             self.config(command=lambda:self.set_state(self.CLICKED_S))
         elif state == self.CLICKED_S:
+            #set filled to true 
+            self.Filled=True
             #set board data to data connected to this button
             BOARD_DATA[self.b_data[0]][self.b_data[1]]=PLAYER_NOW
             #set the text to x or o
@@ -92,6 +99,8 @@ class Board(tk.Button):
                 PLAYER_NOW=PLAYER_O
             elif PLAYER_NOW==PLAYER_O: 
                 PLAYER_NOW=PLAYER_X
+            #check if there any possible move 
+            self.check_move() 
         elif state == self.ISWIN_S:
             #change button appereance AND set to disable state
             self.config(bg=Gray.gray,disabledforeground="#000000",state=tk.DISABLED)
@@ -112,6 +121,19 @@ class Board(tk.Button):
                 if askRestart!=None and askRestart!=False: 
                     TicTacToe.reset_game()
                     return 1
+    def check_move(self):
+        global FILLED_BOARDS
+        #check every board object if their are filled or not
+        for obj in TicTacToe.board_object:
+            if obj.Filled==True:
+                #set to none ;avoid double checking 
+                obj.Filled=None
+                FILLED_BOARDS+=1
+        #reset game if there are none possible move (draw)
+        if FILLED_BOARDS==9:
+            askRestart=messagebox.askyesno("DRAW","RESTART GAME?")
+            if askRestart!=None and askRestart!=False: 
+                    TicTacToe.reset_game()
 
 
 class TicTacToe():
@@ -173,6 +195,7 @@ class TicTacToe():
     def reset_game(cls):
         global BOARD_DATA
         global PLAYER_NOW
+        global FILLED_BOARDS
         #set player to x 
         PLAYER_NOW=PLAYER_X
         #set board data to default
@@ -181,6 +204,8 @@ class TicTacToe():
                     ["-","-","-"],
                     ["-","-","-"]
                    ]
+        #set FILLED_BOARDS to 0 again
+        FILLED_BOARDS=0
         #set all board object to default
         for obj in cls.board_object:
             obj.set_state(obj.DEFAULT_S)
@@ -215,3 +240,4 @@ class TicTacToe():
         
 
 main=TicTacToe(300,340)
+
