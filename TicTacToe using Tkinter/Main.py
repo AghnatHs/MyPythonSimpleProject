@@ -84,21 +84,7 @@ class Board(tk.Button):
             #set the text to x or o
             self.config(text=PLAYER_NOW,font=self._font)
             #check if in this state,somebody is wins
-            check_win=TicTacToe.check_win()
-            if check_win!=None: 
-                check_win=list(check_win)
-                if check_win[0]:
-                    TicTacToe.set_win()
-                    if check_win[1]==X_WIN:
-                        #ask if user want to restart a game
-                        askRestart=messagebox.askyesno("X WIN THE GAME","RESTART GAME?")
-                    elif check_win[1]==O_WIN:
-                        #ask if user want to restart a game
-                        askRestart=messagebox.askyesno("O WIN THE GAME","RESTART GAME?")
-                    #restart the game if user select yes
-                    if askRestart!=None and askRestart!=False: 
-                        TicTacToe.reset_game()
-                        return 0
+            if self.check_win(): return 0
             #change button appereance AND set to disable state
             self.config(bg=Gray.gray,disabledforeground="#000000",state=tk.DISABLED)
             #set PLAYER_NOW to x or o
@@ -109,7 +95,23 @@ class Board(tk.Button):
         elif state == self.ISWIN_S:
             #change button appereance AND set to disable state
             self.config(bg=Gray.gray,disabledforeground="#000000",state=tk.DISABLED)
-        
+    
+    def check_win(self):
+        check_win=TicTacToe.check_win()
+        if check_win!=None: 
+            check_win=list(check_win)
+            if check_win[0]:
+                TicTacToe.set_win()
+                if check_win[1]==X_WIN:
+                    #ask if user want to restart a game
+                    askRestart=messagebox.askyesno("X WIN THE GAME","RESTART GAME?")
+                elif check_win[1]==O_WIN:
+                    #ask if user want to restart a game
+                    askRestart=messagebox.askyesno("O WIN THE GAME","RESTART GAME?")
+                #restart the game if user select yes
+                if askRestart!=None and askRestart!=False: 
+                    TicTacToe.reset_game()
+                    return 1
 
 
 class TicTacToe():
@@ -199,7 +201,7 @@ class TicTacToe():
             return True,X_WIN
         
         #CHECK THE O
-        if (
+        elif (
             (BOARD_DATA[0]==["O","O","O"]) or #horizontal row 1
             (BOARD_DATA[1]==["O","O","O"]) or #horizontal row 2
             (BOARD_DATA[2]==["O","O","O"]) or   #horizontal row 3
