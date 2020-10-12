@@ -21,10 +21,7 @@ class Calculator():
 	__ERROR_DRAW="Coordinate Is Not Complete/Wrong Format,Format:x1.x2.y1.y2"
 	__ERROR_NAMES="Wrong Math Symbol"
 	#VERSION
-	__VERSION="1.1.2"
-	#CANVAS FOR DRAWING GRAPHIC
-	__CANVAS_X=250
-	__CANVAS_Y=10
+	__VERSION="1.1.3"
 	def __init__(self):
 		#Main Window
 		self.master=tk.Tk()
@@ -44,8 +41,6 @@ class Calculator():
 
 		self.createButton()
 		self.createMenu()
-		#Create Canvas
-		self.createCanvas()
 
 		#Looping The Main Window
 		self.master.mainloop()
@@ -74,14 +69,14 @@ class Calculator():
 		self.MainMenu=tk.Menu(self.master)
 
 		#ChangeRelief
-		self.ChangeRelief=tk.Menu(self.MainMenu)
+		self.ChangeRelief=tk.Menu(self.MainMenu,tearoff=False)
 		self.ChangeRelief.add_command(label="Sunken",command=lambda:self.changeReliefButton(_relief=tk.SUNKEN))
 		self.ChangeRelief.add_command(label="Raised",command=lambda:self.changeReliefButton(_relief=tk.RAISED))
 		self.ChangeRelief.add_command(label="Flat",command=lambda:self.changeReliefButton(_relief=tk.FLAT))
 		#Change Color
-		self.ChangeColor=tk.Menu(self.MainMenu)
-		self.ChangeColor.add_command(label="Default",command=lambda:self.changeTheme(_masterbg="#DCDCDC",_valuebg="#DCDCDC",_canvasbg="#DCDCDC"))
-		self.ChangeColor.add_command(label="Green Dark",command=lambda:self.changeTheme(_colorbtn=Gray.darkgray,_masterbg=Gray.darkslategray,_valuebg=Gray.darkslategray,_canvasbg=Gray.darkslategray))
+		self.ChangeColor=tk.Menu(self.MainMenu,tearoff=False)
+		self.ChangeColor.add_command(label="Default",command=lambda:self.changeTheme(_masterbg="#DCDCDC",_valuebg="#DCDCDC"))
+		self.ChangeColor.add_command(label="Green Dark",command=lambda:self.changeTheme(_colorbtn=Gray.darkgray,_masterbg=Gray.darkslategray,_valuebg=Gray.darkslategray))
 
 
 		#CASCADE
@@ -114,9 +109,6 @@ class Calculator():
 		self.btnPhi=tk.Button(self.master,text="phi",command=lambda:self.insertValue("PI"))
 		self.btnOpBracket=tk.Button(self.master,text=" ( ",command=lambda:self.insertValue("("))
 		self.btnClBracket=tk.Button(self.master,text=" ) ",command=lambda:self.insertValue(")"))
-
-		self.btnDrawRect=tk.Button(self.master,text="Draw Rectangle",command=lambda:self.drawCanvas())
-		self.btnClrDraw=tk.Button(self.master,text="Clr Draw",command=lambda:self.clearCanvas())
 		self.btnAbout=tk.Button(self.master,text="About",command=self.createAbout
 								,width=6,bg=Gray.lightgray,takefocus="on",relief=tk.FLAT)
 		self.btnTips=tk.Button(self.master,text="Tips",command=self.createTips
@@ -127,8 +119,8 @@ class Calculator():
 							self.btn5,self.btn6,self.btn7,self.btn8
 							,self.btn9,self.btn0,self.btnDelete,self.btnClear,self.btnEqual,self.btnPlus
 							,self.btnMinus,self.btnTimes,self.btnTimesDot,self.btnDivide,self.btnSqrt
-							,self.btnPhi,self.btnOpBracket,self.btnClBracket,self.btnFloat,self.btnDrawRect,
-							self.btnClrDraw]
+							,self.btnPhi,self.btnOpBracket,self.btnClBracket,self.btnFloat
+							]
 
 		self.changeTheme()
 		self.packButton()
@@ -157,8 +149,6 @@ class Calculator():
 		self.btnPhi.pack()
 		self.btnOpBracket.pack()
 		self.btnClBracket.pack()
-		self.btnDrawRect.pack()
-		self.btnClrDraw.pack()
 		self.btnAbout.pack()
 		self.btnTips.pack()
 	def placeButton(self):
@@ -189,43 +179,16 @@ class Calculator():
 		self.btnAbout.place(x=10,y=self.__NATIVE_HEIGHT-35)
 		self.btnTips.place(x=65,y=self.__NATIVE_HEIGHT-35)
 
-		self.btnClrDraw.place(x=self.__CANVAS_X+95,y=280)
-		self.btnDrawRect.place(x=self.__CANVAS_X,y=280)
-
 	#MANIPULATE BUTTON PROPERTY
-	def changeTheme(self,_colorbtn=Gray.lightgray,_masterbg=None,_valuebg=None,_canvasbg=None):
+	def changeTheme(self,_colorbtn=Gray.lightgray,_masterbg=None,_valuebg=None):
 		for index in range(len(self.__LIST_BUTTON)):
 			self.__LIST_BUTTON[index]["bg"]=_colorbtn
 
 		if _masterbg!=None: self.master.config(bg=_masterbg)
 		if _valuebg!=None: self.value.config(bg=_valuebg)
-		if _canvasbg!=None: self.canvas.config(bg=_canvasbg)
 	def changeReliefButton(self,_relief):
 		for index in range(len(self.__LIST_BUTTON)):
 			self.__LIST_BUTTON[index]["relief"]=_relief
-
-	#CREATE CANVAS
-	def createCanvas(self):
-		#Canvas Master
-		self.canvas=tk.Canvas(self.master,bg="white",borderwidth=0,insertborderwidth=0)
-		self.canvas.pack()
-		self.canvas.place(x=self.__CANVAS_X,y=self.__CANVAS_Y)\
-		#Stored Canvas Width and Height
-		self.canvasW=int(self.canvas.cget("width"))
-		self.canvasH=int(self.canvas.cget("height"))
-		#DRAW X AND Y COORDINATE
-		self.__XCOORDINATE=self.canvas.create_line(0,self.canvasH/2,self.canvasW+2,self.canvasH/2,fill="red")
-		self.__YCOORDINATE=self.canvas.create_line(self.canvasW/2,0,self.canvasW/2,self.canvasH,fill="red")
-	def drawCanvas(self):
-		try:
-			self.RectCoordinate="".join(self.evaluationLabel).split(".")
-			self.rect=self.canvas.create_rectangle(self.RectCoordinate,width=4)
-			self.canvas.addtag_withtag("rect",self.rect)
-		except tk.TclError:
-			messagebox.showerror("Error",self.__ERROR_DRAW)
-	def clearCanvas(self):
-		self.canvas.delete("rect")
-		pass
 
 	#VALUE CHANGEs
 	def equalValue(self):
