@@ -108,7 +108,6 @@ class Board(tk.Button):
     def check_win(self):
         check_win=TicTacToe.check_win()
         if check_win!=None: 
-            check_win=list(check_win)
             if check_win[0]:
                 TicTacToe.set_win()
                 if check_win[1]==X_WIN:
